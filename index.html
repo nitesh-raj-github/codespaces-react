@@ -1,35 +1,797 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using @vitejs/plugin-react"
-    />
-    <link rel="apple-touch-icon" href="/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="/manifest.json" />
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Management App</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --danger-color: #f72585;
+            --success-color: #4ad66d;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-menu li a {
+            color: var(--dark-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        
+        .sidebar-menu li a:hover {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+        }
+        
+        .sidebar-menu li a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .sidebar-menu li a i {
+            margin-right: 10px;
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            font-weight: 500;
+        }
+        
+        tr:hover {
+            background-color: var(--light-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .status-present {
+            color: var(--success-color);
+        }
+        
+        .status-absent {
+            color: var(--danger-color);
+        }
+        
+        .attendance-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+        }
+        
+        .attendance-day {
+            background-color: var(--light-color);
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        
+        .stat-card {
+            background-color: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+        
+        .stat-label {
+            color: var(--dark-color);
+        }
+    </style>
+</head>
+<body>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
-  <script type="module" src="/src/index.jsx"></script>
+        // Sample data
+        const initialClasses = [
+            { id: 1, name: 'Math 101', subject: 'Mathematics', teacher: 'Mr. Smith', time: 'Mon, Wed 9:00 AM', room: 'A101', students: 25 },
+            { id: 2, name: 'History 201', subject: 'History', teacher: 'Ms. Johnson', time: 'Tue, Thu 10:30 AM', room: 'B205', students: 18 },
+            { id: 3, name: 'Science 301', subject: 'Science', teacher: 'Dr. Brown', time: 'Mon, Fri 2:00 PM', room: 'Lab 3', students: 22 }
+        ];
+
+        const initialStudents = [
+            { id: 1, name: 'John Doe', email: 'john@example.com', phone: '555-1234', grade: 'A', classId: 1 },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', phone: '555-5678', grade: 'B+', classId: 1 },
+            { id: 3, name: 'Mike Johnson', email: 'mike@example.com', phone: '555-9012', grade: 'A-', classId: 2 },
+            { id: 4, name: 'Sarah Williams', email: 'sarah@example.com', phone: '555-3456', grade: 'B', classId: 2 },
+            { id: 5, name: 'David Brown', email: 'david@example.com', phone: '555-7890', grade: 'A', classId: 3 }
+        ];
+
+        const initialAttendance = [
+            { studentId: 1, date: '2023-06-01', status: 'present' },
+            { studentId: 2, date: '2023-06-01', status: 'absent' },
+            { studentId: 3, date: '2023-06-01', status: 'present' },
+            { studentId: 1, date: '2023-06-02', status: 'present' },
+            { studentId: 2, date: '2023-06-02', status: 'present' },
+            { studentId: 3, date: '2023-06-02', status: 'present' },
+            { studentId: 4, date: '2023-06-02', status: 'absent' }
+        ];
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('dashboard');
+            const [classes, setClasses] = useState(initialClasses);
+            const [students, setStudents] = useState(initialStudents);
+            const [attendance, setAttendance] = useState(initialAttendance);
+            const [selectedClass, setSelectedClass] = useState(null);
+            const [newClass, setNewClass] = useState({ name: '', subject: '', teacher: '', time: '', room: '' });
+            const [newStudent, setNewStudent] = useState({ name: '', email: '', phone: '', grade: '', classId: '' });
+            const [newAttendance, setNewAttendance] = useState({ studentId: '', date: '', status: 'present' });
+
+            const handleTabChange = (tab) => {
+                setActiveTab(tab);
+            };
+
+            const handleAddClass = (e) => {
+                e.preventDefault();
+                const newClassObj = {
+                    ...newClass,
+                    id: classes.length + 1,
+                    students: 0
+                };
+                setClasses([...classes, newClassObj]);
+                setNewClass({ name: '', subject: '', teacher: '', time: '', room: '' });
+            };
+
+            const handleAddStudent = (e) => {
+                e.preventDefault();
+                const newStudentObj = {
+                    ...newStudent,
+                    id: students.length + 1
+                };
+                setStudents([...students, newStudentObj]);
+                
+                // Update student count in the class
+                const updatedClasses = classes.map(cls => {
+                    if (cls.id === parseInt(newStudent.classId)) {
+                        return { ...cls, students: cls.students + 1 };
+                    }
+                    return cls;
+                });
+                setClasses(updatedClasses);
+                
+                setNewStudent({ name: '', email: '', phone: '', grade: '', classId: '' });
+            };
+
+            const handleAddAttendance = (e) => {
+                e.preventDefault();
+                const newAttendanceObj = {
+                    ...newAttendance,
+                    id: attendance.length + 1
+                };
+                setAttendance([...attendance, newAttendanceObj]);
+                setNewAttendance({ studentId: '', date: '', status: 'present' });
+            };
+
+            const getClassStudents = (classId) => {
+                return students.filter(student => student.classId === classId);
+            };
+
+            const getStudentAttendance = (studentId) => {
+                return attendance.filter(record => record.studentId === studentId);
+            };
+
+            const Dashboard = () => {
+                const totalClasses = classes.length;
+                const totalStudents = students.length;
+                const attendanceRate = attendance.length > 0 
+                    ? Math.round((attendance.filter(a => a.status === 'present').length / attendance.length) * 100) 
+                    : 0;
+
+                return (
+                    <div>
+                        <h2 className="page-title">Dashboard</h2>
+                        <div className="stats-grid">
+                            <div className="stat-card">
+                                <div className="stat-label">Total Classes</div>
+                                <div className="stat-value">{totalClasses}</div>
+                            </div>
+                            <div className="stat-card">
+                                <div className="stat-label">Total Students</div>
+                                <div className="stat-value">{totalStudents}</div>
+                            </div>
+                            <div className="stat-card">
+                                <div className="stat-label">Attendance Rate</div>
+                                <div className="stat-value">{attendanceRate}%</div>
+                            </div>
+                        </div>
+                        <div className="card">
+                            <h3 className="card-title">Recent Classes</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Subject</th>
+                                        <th>Teacher</th>
+                                        <th>Students</th>
+                                        <th>Time</th>
+                                        <th>Room</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {classes.map(cls => (
+                                        <tr key={cls.id} onClick={() => { setSelectedClass(cls); handleTabChange('class-detail'); }}>
+                                            <td>{cls.name}</td>
+                                            <td>{cls.subject}</td>
+                                            <td>{cls.teacher}</td>
+                                            <td>{cls.students}</td>
+                                            <td>{cls.time}</td>
+                                            <td>{cls.room}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                );
+            };
+
+            const ClassList = () => {
+                return (
+                    <div>
+                        <div className="page-title">
+                            <h2>Classes</h2>
+                            <button className="btn btn-primary" onClick={() => handleTabChange('add-class')}>Add New Class</button>
+                        </div>
+                        <div className="card">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Subject</th>
+                                        <th>Teacher</th>
+                                        <th>Students</th>
+                                        <th>Time</th>
+                                        <th>Room</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {classes.map(cls => (
+                                        <tr key={cls.id}>
+                                            <td>{cls.name}</td>
+                                            <td>{cls.subject}</td>
+                                            <td>{cls.teacher}</td>
+                                            <td>{cls.students}</td>
+                                            <td>{cls.time}</td>
+                                            <td>{cls.room}</td>
+                                            <td>
+                                                <button 
+                                                    className="btn btn-primary"
+                                                    onClick={() => { setSelectedClass(cls); handleTabChange('class-detail'); }}
+                                                >
+                                                    View
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                );
+            };
+
+            const AddClass = () => {
+                return (
+                    <div>
+                        <h2 className="page-title">Add New Class</h2>
+                        <div className="card">
+                            <form onSubmit={handleAddClass}>
+                                <div className="form-group">
+                                    <label>Class Name</label>
+                                    <input 
+                                        type="text" 
+                                        value={newClass.name}
+                                        onChange={(e) => setNewClass({...newClass, name: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Subject</label>
+                                    <input 
+                                        type="text" 
+                                        value={newClass.subject}
+                                        onChange={(e) => setNewClass({...newClass, subject: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Teacher</label>
+                                    <input 
+                                        type="text" 
+                                        value={newClass.teacher}
+                                        onChange={(e) => setNewClass({...newClass, teacher: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Schedule Time</label>
+                                    <input 
+                                        type="text" 
+                                        value={newClass.time}
+                                        onChange={(e) => setNewClass({...newClass, time: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Room Number</label>
+                                    <input 
+                                        type="text" 
+                                        value={newClass.room}
+                                        onChange={(e) => setNewClass({...newClass, room: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <button type="submit" className="btn btn-primary">Add Class</button>
+                            </form>
+                        </div>
+                    </div>
+                );
+            };
+
+            const ClassDetail = () => {
+                if (!selectedClass) return <div>Select a class to view details</div>;
+
+                const classStudents = getClassStudents(selectedClass.id);
+
+                return (
+                    <div>
+                        <div className="page-title">
+                            <h2>{selectedClass.name} - {selectedClass.subject}</h2>
+                            <button className="btn btn-primary" onClick={() => handleTabChange('add-student')}>Add Student</button>
+                        </div>
+                        <div className="card">
+                            <div className="class-info">
+                                <p><strong>Teacher:</strong> {selectedClass.teacher}</p>
+                                <p><strong>Time:</strong> {selectedClass.time}</p>
+                                <p><strong>Room:</strong> {selectedClass.room}</p>
+                                <p><strong>Students:</strong> {selectedClass.students}</p>
+                            </div>
+                        </div>
+                        <div className="card">
+                            <h3 className="card-title">Students</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Grade</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {classStudents.map(student => (
+                                        <tr key={student.id}>
+                                            <td>{student.name}</td>
+                                            <td>{student.email}</td>
+                                            <td>{student.phone}</td>
+                                            <td>{student.grade}</td>
+                                            <td>
+                                                <button 
+                                                    className="btn btn-primary"
+                                                    onClick={() => handleTabChange('student-detail')}
+                                                >
+                                                    View
+                                                </button>
+                                                <button className="btn btn-danger">Remove</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="card">
+                            <h3 className="card-title">Attendance</h3>
+                            <button 
+                                className="btn btn-primary"
+                                onClick={() => handleTabChange('add-attendance')}
+                            >
+                                Add Attendance Record
+                            </button>
+                            <div className="attendance-grid">
+                                {classStudents.map(student => {
+                                    const studentRecords = getStudentAttendance(student.id);
+                                    const presentCount = studentRecords.filter(r => r.status === 'present').length;
+                                    const totalRecords = studentRecords.length;
+                                    const attendancePercentage = totalRecords > 0 
+                                        ? Math.round((presentCount / totalRecords) * 100) 
+                                        : 0;
+                                    
+                                    return (
+                                        <div key={student.id} className="attendance-day">
+                                            <div>{student.name}</div>
+                                            <div>Attendance: {attendancePercentage}%</div>
+                                            <div>
+                                                {studentRecords.slice(0, 3).map(record => (
+                                                    <div key={`${record.studentId}-${record.date}`}>
+                                                        {record.date}: 
+                                                        <span className={`status-${record.status}`}>
+                                                            {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                                {studentRecords.length > 3 && <div>+{studentRecords.length - 3} more</div>}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const AddStudent = () => {
+                return (
+                    <div>
+                        <h2 className="page-title">Add New Student</h2>
+                        <div className="card">
+                            <form onSubmit={handleAddStudent}>
+                                <div className="form-group">
+                                    <label>Full Name</label>
+                                    <input 
+                                        type="text" 
+                                        value={newStudent.name}
+                                        onChange={(e) => setNewStudent({...newStudent, name: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Email</label>
+                                    <input 
+                                        type="email" 
+                                        value={newStudent.email}
+                                        onChange={(e) => setNewStudent({...newStudent, email: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Phone</label>
+                                    <input 
+                                        type="tel" 
+                                        value={newStudent.phone}
+                                        onChange={(e) => setNewStudent({...newStudent, phone: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Grade</label>
+                                    <input 
+                                        type="text" 
+                                        value={newStudent.grade}
+                                        onChange={(e) => setNewStudent({...newStudent, grade: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Class</label>
+                                    <select
+                                        value={newStudent.classId}
+                                        onChange={(e) => setNewStudent({...newStudent, classId: e.target.value})}
+                                        required
+                                    >
+                                        <option value="">Select a class</option>
+                                        {classes.map(cls => (
+                                            <option key={cls.id} value={cls.id}>
+                                                {cls.name} - {cls.subject}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <button type="submit" className="btn btn-primary">Add Student</button>
+                            </form>
+                        </div>
+                    </div>
+                );
+            };
+
+            const AddAttendance = () => {
+                if (!selectedClass) return <div>Select a class first</div>;
+                const classStudents = getClassStudents(selectedClass.id);
+
+                return (
+                    <div>
+                        <h2 className="page-title">Add Attendance Record</h2>
+                        <div className="card">
+                            <form onSubmit={handleAddAttendance}>
+                                <div className="form-group">
+                                    <label>Student</label>
+                                    <select
+                                        value={newAttendance.studentId}
+                                        onChange={(e) => setNewAttendance({...newAttendance, studentId: e.target.value})}
+                                        required
+                                    >
+                                        <option value="">Select a student</option>
+                                        {classStudents.map(student => (
+                                            <option key={student.id} value={student.id}>
+                                                {student.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Date</label>
+                                    <input 
+                                        type="date" 
+                                        value={newAttendance.date}
+                                        onChange={(e) => setNewAttendance({...newAttendance, date: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Status</label>
+                                    <select
+                                        value={newAttendance.status}
+                                        onChange={(e) => setNewAttendance({...newAttendance, status: e.target.value})}
+                                        required
+                                    >
+                                        <option value="present">Present</option>
+                                        <option value="absent">Absent</option>
+                                    </select>
+                                </div>
+                                <button type="submit" className="btn btn-primary">Add Record</button>
+                            </form>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderContent = () => {
+                switch (activeTab) {
+                    case 'dashboard':
+                        return <Dashboard />;
+                    case 'classes':
+                        return <ClassList />;
+                    case 'add-class':
+                        return <AddClass />;
+                    case 'class-detail':
+                        return <ClassDetail />;
+                    case 'add-student':
+                        return <AddStudent />;
+                    case 'add-attendance':
+                        return <AddAttendance />;
+                    default:
+                        return <Dashboard />;
+                }
+            };
+
+            return (
+                <div>
+                    <header>
+                        <div className="header-content container">
+                            <div className="logo">Class Manager</div>
+                            <nav>
+                                <ul>
+                                    <li><a href="#" onClick={(e) => { e.preventDefault(); handleTabChange('dashboard'); }}>Dashboard</a></li>
+                                    <li><a href="#" onClick={(e) => { e.preventDefault(); handleTabChange('classes'); }}>Classes</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </header>
+                    <main className="container">
+                        <div className="dashboard">
+                            <div className="sidebar">
+                                <ul className="sidebar-menu">
+                                    <li>
+                                        <a 
+                                            href="#" 
+                                            className={activeTab === 'dashboard' ? 'active' : ''}
+                                            onClick={(e) => { e.preventDefault(); handleTabChange('dashboard'); }}
+                                        >
+                                            <i class="fas fa-tachometer-alt"></i>
+                                            Dashboard
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                            href="#" 
+                                            className={activeTab === 'classes' ? 'active' : ''}
+                                            onClick={(e) => { e.preventDefault(); handleTabChange('classes'); }}
+                                        >
+                                            <i class="fas fa-chalkboard-teacher"></i>
+                                            Classes
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="main-content">
+                                {renderContent()}
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
 </html>
+
